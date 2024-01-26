@@ -21,6 +21,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		title,
 		play,
 		clear,
+		gameover,
 	};
 	Scene scene = title;
 	int gameStart = false;
@@ -28,6 +29,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	int Title = Novice::LoadTexture("./Resources/title.png");
 	int Ctrl = Novice::LoadTexture("./Resources/ctrl.png");
 	int Clear = Novice::LoadTexture("./Resources/clear.png");
+	int GameOver = Novice::LoadTexture("./Resources/gameover.png");
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -68,9 +70,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				    scene = clear;
 			    }
 			}
+			player->HitEnemy(boss->GetPos(), boss->GetRadius());
+			if (!player->CheckAlive()) {
+				scene = gameover;
+			}
 
 			break;
 		case clear:
+			if (keys[DIK_SPACE] && preKeys[DIK_SPACE] == 0) {
+				scene = title;
+			}
+			break;
+		case gameover:
 			if (keys[DIK_SPACE] && preKeys[DIK_SPACE] == 0) {
 				scene = title;
 			}
@@ -105,6 +116,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			Novice::DrawBox(0, 0, 1280, 740, 0.0f, WHITE, kFillModeSolid);
 			Novice::DrawSprite(0, 0, Clear, 1, 1, 0.0f, WHITE);
 			break;
+		case gameover:
+			Novice::DrawSprite(0, 0, GameOver, 1, 1, 0.0f, WHITE);
+			break;
 		default:
 			break;
 		}
@@ -122,6 +136,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 	}
 	delete player;
+	delete boss;
 
 	// ライブラリの終了
 	Novice::Finalize();

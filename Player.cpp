@@ -5,6 +5,7 @@ Player::Player() {
 	pos_ = { 640,360 };
 	radius_ = 30;
 	speed_ = 8;
+	alive = true;
 
 	bullet_ = new Bullet();
 }
@@ -79,6 +80,26 @@ int Player::HitBullet(Vector2 pos, int radius) {
 	return false;
 }
 
+void Player::HitEnemy(Vector2 pos, int radius) {
+
+	float dx = pos.x - pos_.x;
+	float dy = pos.y - pos_.y;
+
+	float combonedRadius = float(radius + radius_);
+
+	if ((dx * dx + dy * dy) < (combonedRadius * combonedRadius)) {
+		alive = false;
+
+	}
+}
+
+int Player::CheckAlive() {
+	if (alive) {
+		return true;
+	}
+	return false;
+}
+
 void Player::Reset() {
 	pos_ = { 640,360 };
 	for (int i = 0; i < 32; i++) {
@@ -87,5 +108,6 @@ void Player::Reset() {
 		bullet_->speed_[i] = 15;
 		bullet_->isShot_[i] = false;
 	}
+	alive = true;
 	bullet_->shotCoolTime = 15;
 }
